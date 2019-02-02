@@ -8,17 +8,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
+
+public class MainActivity extends AppCompatActivity {
     // Constants
     private static final String TAG = MainActivity.class.getName();
 
     // Constructors
-    private static final String TAG = "MainActivity";
-
     public MainActivity() {
-
-    // Methods        Log.i(TAG, "Initializing.");
+        Log.i(TAG, "Initializing.");
     }
 
+    // Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
