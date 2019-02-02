@@ -29,8 +29,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    compile 'com.google.api-client:google-api-client-android:1.22.0'
-    compile 'com.google.apis:google-api-services-vision:v1-rev357-1.22.0'
-    compile 'com.google.code.findbugs:jsr305:2.0.1'
-    compile 'commons-io:commons-io:2.5'
+    api 'com.google.api-client:google-api-client-android:1.22.0'
+    api 'com.google.apis:google-api-services-vision:v1-rev357-1.22.0'
+    api 'com.google.code.findbugs:jsr305:2.0.1'
+    api 'commons-io:commons-io:2.5'
 }

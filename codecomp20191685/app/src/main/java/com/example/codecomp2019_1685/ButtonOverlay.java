@@ -21,7 +21,7 @@ public class ButtonOverlay extends Service
     private ImageView button;
 
     // Constructors
-    public MainActivity() {
+    public ButtonOverlay() {
         Log.i(TAG, "Initializing.");
     }
 
