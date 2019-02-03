@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,16 +18,16 @@
     <TextView
         android:id="@+id/transcribe"
         android:layout_width="match_parent"
-        android:layout_height="84dp"
-        android:text="TextView" />
+        android:layout_height="210dp"
+        android:textAlignment="center" />
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="32dp" />
+        android:layout_height="35dp" />
 
     <TextView
         android:id="@+id/web"
         android:layout_width="match_parent"
         android:layout_height="106dp"
-        android:text="TextView" />
+        android:textAlignment="center" />
 </LinearLayout>

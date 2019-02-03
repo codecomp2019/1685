@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 
 public class ButtonOverlay extends Service
@@ -22,10 +23,11 @@ public class ButtonOverlay extends Service
     private WindowManager windowManager;
     WindowManager.LayoutParams params;
     private ImageView button;
+    private Button buttons;
 
     // Constructors
     public ButtonOverlay() {
-        Log.i(TAG, "Initializing. Button Overlay");
+        Log.i(TAG, "Initializing.");
     }
 
     /*@Override
@@ -35,18 +37,19 @@ public class ButtonOverlay extends Service
         return true;
     }*/
     // Methods
-   @Override
-   public void onCreate()
-   {
+    @Override
+    public void onCreate()
+    {
         super.onCreate();
-        Log.i(TAG, "I have reched creation of a window.");
+        Log.i(TAG, "I have reached creation of a window.");
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        button = new ImageView(this);
-        button.setImageResource(R.drawable.circle);
+        // button = new ImageView(this);
+        buttons = new Button(this);
+        // button.setImageResource(R.drawable.circle);
         int LAYOUT;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             LAYOUT = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        } 
+        }
         else
         {
             LAYOUT= WindowManager.LayoutParams.TYPE_PHONE;
@@ -60,48 +63,39 @@ public class ButtonOverlay extends Service
 
                 PixelFormat.TRANSLUCENT);
 
-        params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+        params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = 0;
-        params.y = 100;
+        params.y = 0;
 
-        windowManager.addView(button, params);
+        windowManager.addView(buttons, params);
 
-        button.setOnTouchListener(new View.OnTouchListener(){
-            private int initX;
-            private int initY;
-            private float initTX;
-            private float initTY;
+        buttons.setOnTouchListener(new View.OnTouchListener(){
+
 
             @Override public boolean onTouch (View v, MotionEvent event)
             {
                 switch (event.getAction())
                 {
-                    case MotionEvent.ACTION_DOWN:
-                        initX = params.x;
-                        initY = params.y;
-                        initTX = event.getRawX();
-                        initTY = event.getRawY();
-                        return true;
-                    case MotionEvent.ACTION_UP:
-                        return true;
+
                     case MotionEvent.ACTION_MOVE:
-                        params.x = initX +(int) (event.getRawX()-initTX);
-                        params.y = initY +(int) (event.getRawY() -initTY);
-                        windowManager.updateViewLayout(button,params);
+                        params.x = (int) event.getRawX() - 150;
+                        params.y =  (int) event.getRawY() -150;
+                        windowManager.updateViewLayout(buttons,params);
                         return true;
-                    case MotionEvent.ACTION_BUTTON_PRESS:
-                        //performClick();
-                        return true;
+
 
                 }
                 return false;
             }
 
         });
-        button.setOnLongClickListener(new View.OnLongClickListener() {
+        buttons.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                return false;
+                final Intent screenshotIntent = new Intent(ButtonOverlay.this, ScreenshotCommand.class);
+                screenshotIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(screenshotIntent);
+                return true;
             }
         });
     }
