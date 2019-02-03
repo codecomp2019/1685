@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("TTS", "TTS has been Pressed");
 
                 final Image inputImage = new Image();
-                final int location = R.raw.laundry;
+                final int location = R.raw.shrekisloveshrekislife;
 
                 try {
                     final InputStream inputStream = getResources().openRawResource(location);
