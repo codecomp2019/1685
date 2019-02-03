@@ -30,6 +30,37 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "Initializing Main Activity.");
     }
 
+    // Inner Class
+    private class GoogleRunnable implements Runnable {
+        // Instances
+        private Image inputImage;
+        private String textDetect;
+        private String webDetect;
+
+        // Constructors
+        private GoogleRunnable() { }
+
+        public GoogleRunnable(Image inputImage) {
+            this();
+            this.inputImage = inputImage;
+        }
+
+        // Methods
+        @Override
+        public void run() {
+            try {
+                // Text detections detect the text on the image.
+                this.textDetect = googleAPI.computeTextDetection(this.inputImage);
+                // Web detections detect the subject on the image.
+                this.webDetect = googleAPI.computeWebDetection(this.inputImage);
+            } catch (IOException ex) {
+                // TODO: Put log error into.
+                Log.e(TAG, "IO failure at" + ex.getStackTrace());
+            }
+            return;
+        }
+    }
+
     // Methods
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,31 +81,46 @@ public class MainActivity extends AppCompatActivity {
                 startService(new Intent(MainActivity.this, ButtonOverlay.class));
             }
         });
-        // TODO: Use for print screens
-        AsyncTask.execute(new Runnable() {
+        // TODO: Use for print
+        ttsButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
+            public void onClick(View view) {
+                Log.d("TTS", "TTS has been Pressed");
+
+                final Image inputImage = new Image();
+                final int location = R.raw.laundry;
+
                 try {
-                    final InputStream inputStream = getResources().openRawResource(R.raw.shrekisloveshrekislife);
+                    final InputStream inputStream = getResources().openRawResource(location);
                     final byte[] photoData = IOUtils.toByteArray(inputStream);
                     inputStream.close();
-
-                    final Image inputImage = new Image();
                     inputImage.encodeContent(photoData);
 
-                    // Text detections detect the text on the image.
-                    final String textDetect = googleAPI.computeTextDetection(inputImage);
-                    // Web detections detect the subject on the image.
-                    final String webDetect = googleAPI.computeWebDetection(inputImage);
+                    final GoogleRunnable google = new GoogleRunnable(inputImage);
 
-                    Log.i(TAG, "Returned Shit: \nText:\n" + textDetect + "\nWeb Type:\n" + webDetect);
-                }
-                catch (IOException ex) {
+                    AsyncTask.execute(google);
+
+                    while (google.textDetect == null || google.webDetect == null) { }
+
+                    Log.i(TAG, "Returned Shit: \nText:\n" + google.textDetect + "\nWeb Type:\n" + google.webDetect);
+                    String t1 = ""+google.textDetect;
+                    String t2 = ""+google.webDetect;
+                 //   System.out.println("Google Output" + google.textDetect + " " + google.webDetect + " " + location);
+                 ///   final SpeakingAndroid speak = new SpeakingAndroid( t1,  t2, location);
+                   // System.out.println("Google Output2" + google.textDetect + " " + google.webDetect + " " + location);
+                    final Intent toSpeaker = new Intent(MainActivity.this, SpeakingAndroid.class);
+                    toSpeaker.putExtra("WORD",t1);
+                    toSpeaker.putExtra("WEB",t2);
+                    toSpeaker.putExtra("IMAGE",location);
+                    startActivity(toSpeaker);
+
+                } catch (IOException ex) {
                     // TODO: Put log error into.
                     Log.e(TAG, "IO failure at" + ex.getStackTrace());
                 }
             }
         });
+
     }
 
     @Override
