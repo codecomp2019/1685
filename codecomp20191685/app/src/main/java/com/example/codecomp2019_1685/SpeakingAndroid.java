@@ -1,15 +1,11 @@
 package com.example.codecomp2019_1685;
 import android.app.Activity;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.content.Intent;
 import java.util.Locale;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,7 +18,6 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
     private int MY_DATA_CHECK_CODE = 421;
     private String words;
     private String web;
-    // private byte[] theMemeImage;
 
     //create the Activity
     public void onCreate(Bundle savedInstanceState) {
@@ -32,14 +27,10 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
         setContentView(R.layout.output);
         words = getIntent().getStringExtra("WORD");
         web = getIntent().getStringExtra("WEB");
-        // theMemeImage = getIntent().getByteArrayExtra("IMAGE");
         TextView meme = (TextView) findViewById(R.id.transcribe);
         meme.setText(words);
         TextView webs = (TextView) findViewById(R.id.web);
         webs.setText(web);
-        ImageView imag = (ImageView) findViewById(R.id.meme);
-        // final Bitmap bmp = BitmapFactory.decodeByteArray(theMemeImage, 0, theMemeImage.length);
-        // imag.setImageBitmap(bmp);
         //get a reference to the button element listed in the XML layout
         System.out.println(words +" " + web +"HELLO");
         myTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -54,18 +45,6 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
             }
         });
 
-    }
-
-    //speak the user text
-    private void speakWords(String speech) {
-
-        Log.i(TAG, " " + speech);
-        //speak straight away
-        int success = 0;
-
-        //myTTS.speak(speech, TextToSpeech.QUEUE_FLUSH, null);
-        success = myTTS.speak(speech,0, null,null);
-        //myTTS.shutdown();
     }
 
     //act on result of TTS data check

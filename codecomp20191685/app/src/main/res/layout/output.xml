@@ -9,16 +9,11 @@
         android:layout_width="match_parent"
         android:layout_height="50dp" />
 
-    <ImageView
-        android:id="@+id/meme"
-        android:layout_width="match_parent"
-        android:layout_height="375dp"
-        app:srcCompat="@mipmap/ic_launcher" />
-
     <TextView
         android:id="@+id/transcribe"
         android:layout_width="match_parent"
         android:layout_height="210dp"
+        android:textSize="32dp"
         android:textAlignment="center" />
 
     <Space
@@ -29,5 +24,6 @@
         android:id="@+id/web"
         android:layout_width="match_parent"
         android:layout_height="106dp"
+        android:textSize="32dp"
         android:textAlignment="center" />
 </LinearLayout>

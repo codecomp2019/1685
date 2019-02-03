@@ -1,9 +1,12 @@
 package com.example.codecomp2019_1685;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Vibrator;
+import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,15 +15,19 @@ import android.widget.Button;
 import android.content.Intent;
 import com.google.api.services.vision.v1.model.Image;
 import org.apache.commons.io.IOUtils;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     // Constants
     private static final String TAG = MainActivity.class.getName();
-    private static final int READ_REQUEST_CODE = 420;
+    private static final int MEME_SELECT_REQUEST_CODE = 360;
+    private static final int MEME_CAMERA_REQUEST_CODE = 420;
 
     // Instances
+    private TextToSpeech myTTS;
     private GoogleAPIWrapper googleAPI;
     private Vibrator haptic_feedback;
 
@@ -68,6 +75,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        myTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    // replace this Locale with whatever you want
+                    Locale localeToUse = new Locale("en","US");
+                    myTTS.setLanguage(localeToUse);
+                }
+            }
+        });
+
         this.googleAPI = new GoogleAPIWrapper();
         this.haptic_feedback = (Vibrator) this.getSystemService(VIBRATOR_SERVICE);
         this.use_haptic_feedback();
@@ -81,30 +100,40 @@ public class MainActivity extends AppCompatActivity {
         }
         startService(new Intent(MainActivity.this, ButtonOverlay.class));*/
 
-        final Button ttsButton = (Button) findViewById(R.id.memeselect);
+        final Button memeSelectButton = (Button) findViewById(R.id.memeselect);
 
-        ttsButton.setOnClickListener(new View.OnClickListener() {
+        memeSelectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                myTTS.speak("Meme Select", TextToSpeech.QUEUE_FLUSH, null);
                 MainActivity.this.use_haptic_feedback();
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 intent.setType("image/*");
-                startActivityForResult(intent, READ_REQUEST_CODE);
+                startActivityForResult(intent, MEME_SELECT_REQUEST_CODE);
+            }
+        });
+
+        final Button memeCameraButton = (Button) findViewById(R.id.memecamera);
+
+        memeCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myTTS.speak("Meme Camera", TextToSpeech.QUEUE_FLUSH, null);
+                MainActivity.this.use_haptic_feedback();
+                MainActivity.this.use_haptic_feedback();
+                final Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(intent, MEME_CAMERA_REQUEST_CODE);
             }
         });
 
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode,
-                                 Intent resultData) {
+    public void onActivityResult(int requestCode, int resultCode, Intent resultData) {
+        super.onActivityResult(requestCode, resultCode, resultData);
 
-        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
-        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
-        // response to some other intent, and the code below shouldn't run at all.
-
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == MEME_SELECT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // The document selected by the user won't be returned in the intent.
             // Instead, a URI to that document will be contained in the return intent
             // provided to this method as a parameter.
@@ -121,6 +150,9 @@ public class MainActivity extends AppCompatActivity {
                     final byte[] photoData = IOUtils.toByteArray(inputStream);
                     inputStream.close();
                     inputImage.encodeContent(photoData);
+
+                    while (inputImage == null) { }
+                    myTTS.speak("Processing meme.", TextToSpeech.QUEUE_FLUSH, null);
                     final GoogleRunnable google = new GoogleRunnable(inputImage);
 
                     this.use_haptic_feedback();
@@ -132,18 +164,46 @@ public class MainActivity extends AppCompatActivity {
                     while (google.textDetect == null || google.webDetect == null) { }
 
                     Log.i(TAG, "Returned: \nText:\n" + google.textDetect + "\nWeb Type:\n" + google.webDetect);
-                    String t1 = ""+google.textDetect;
-                    String t2 = ""+google.webDetect;
+                    String t1 = "" + google.textDetect;
+                    String t2 = "" + google.webDetect;
                     final Intent toSpeaker = new Intent(MainActivity.this, SpeakingAndroid.class);
                     toSpeaker.putExtra("WORD", t1);
                     toSpeaker.putExtra("WEB", t2);
-                    // toSpeaker.putExtra("IMAGE", location);
                     startActivity(toSpeaker);
 
                 } catch (IOException ex) {
                     Log.e(TAG, "IO failure at " + ex.getMessage());
                 }
             }
+        }
+        else if (requestCode == MEME_CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            final Bitmap inputBitmap = (Bitmap) resultData.getExtras().get("data");
+            final Image inputImage = new Image();
+
+            final ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            inputBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            final byte[] photoData = stream.toByteArray();
+            inputImage.encodeContent(photoData);
+
+            while (inputImage == null) { }
+            myTTS.speak("Processing meme.", TextToSpeech.QUEUE_FLUSH, null);
+            final GoogleRunnable google = new GoogleRunnable(inputImage);
+
+            this.use_haptic_feedback();
+
+            AsyncTask.execute(google);
+
+            this.use_haptic_feedback();
+
+            while (google.textDetect == null || google.webDetect == null) { }
+
+            Log.i(TAG, "Returned: \nText:\n" + google.textDetect + "\nWeb Type:\n" + google.webDetect);
+            String t1 = "" + google.textDetect;
+            String t2 = "" + google.webDetect;
+            final Intent toSpeaker = new Intent(MainActivity.this, SpeakingAndroid.class);
+            toSpeaker.putExtra("WORD", t1);
+            toSpeaker.putExtra("WEB", t2);
+            startActivity(toSpeaker);
         }
     }
 }

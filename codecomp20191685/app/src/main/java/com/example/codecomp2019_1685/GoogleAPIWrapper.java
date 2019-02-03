@@ -80,7 +80,10 @@ public class GoogleAPIWrapper extends Object {
 
     public String computeTextDetection(Image img) throws IOException {
         final TextAnnotation annotation = requestAnnotation(img, "TEXT_DETECTION").getFullTextAnnotation();
-        return "" + annotation.getText();
+        if (annotation != null) {
+            return "" + annotation.getText();
+        }
+        return "";
     }
 
     public String computeWebDetection(Image img) throws IOException {
