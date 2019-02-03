@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     // replace this Locale with whatever you want
                     Locale localeToUse = new Locale("en","US");
                     myTTS.setLanguage(localeToUse);
-                    myTTS.speak("Welcome to Meme Machine", TextToSpeech.QUEUE_FLUSH, null);
+                    myTTS.speak("Welcome to Meme Machine!", TextToSpeech.QUEUE_FLUSH, null);
                 }
             }
         });
