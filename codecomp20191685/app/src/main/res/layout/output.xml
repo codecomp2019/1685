@@ -12,9 +12,9 @@
     <TextView
         android:id="@+id/transcribe"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
-        android:textSize="32dp"
-        android:textAlignment="center" />
+        android:layout_height="305dp"
+        android:textAlignment="center"
+        android:textSize="32dp" />
 
     <Space
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
     <TextView
         android:id="@+id/web"
         android:layout_width="match_parent"
-        android:layout_height="106dp"
-        android:textSize="32dp"
-        android:textAlignment="center" />
+        android:layout_height="291dp"
+        android:textAlignment="center"
+        android:textSize="32dp" />
 </LinearLayout>

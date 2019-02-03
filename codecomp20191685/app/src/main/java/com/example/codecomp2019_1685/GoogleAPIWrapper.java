@@ -92,7 +92,7 @@ public class GoogleAPIWrapper extends Object {
         String text = "";
         if (entities != null) {
             final WebEntity entity = entities.get(0);
-            text += entity.getScore() * 100 + "% is " + entity.getDescription() + "\n";
+            text += "I guess at a " + entity.getScore() * 100 + "% probability, that this is " + entity.getDescription() + "\n";
         }
         return text;
     }
