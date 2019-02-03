@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Meme Machine</string>
-    <string name ="button">code</string>
+    <string name ="Meme_Select">Meme Select</string>
 </resources>
 

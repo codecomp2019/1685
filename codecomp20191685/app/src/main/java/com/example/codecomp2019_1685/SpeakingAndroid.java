@@ -1,46 +1,28 @@
 package com.example.codecomp2019_1685;
 import android.app.Activity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.view.View;
-import android.widget.EditText;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
 import android.content.Intent;
 import java.util.Locale;
-
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.codecomp2019_1685.R;
-import com.google.api.services.vision.v1.model.Image;
-
 public class SpeakingAndroid extends Activity implements  OnInitListener {
 
-    //TTS object
+    private static final String TAG = SpeakingAndroid.class.getName();
+
+    // Instances
     private TextToSpeech myTTS;
-    //status check code
-    private int MY_DATA_CHECK_CODE = 0;
-    String words ;
-    String web;
-    int theMemeImage ;
-
-   /* public SpeakingAndroid() { }
-
-    public SpeakingAndroid(String text, String web, int image)
-    {
-        this();
-        this.words = text;
-        this.web = web;
-        this.theMemeImage = image;
-        System.out.println("HELLO" + text + " " + web + "DATAD");
-    }*/
-
+    private int MY_DATA_CHECK_CODE = 421;
+    private String words;
+    private String web;
+    // private byte[] theMemeImage;
 
     //create the Activity
     public void onCreate(Bundle savedInstanceState) {
@@ -50,13 +32,14 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
         setContentView(R.layout.output);
         words = getIntent().getStringExtra("WORD");
         web = getIntent().getStringExtra("WEB");
-        theMemeImage = getIntent().getIntExtra("IMAGE", 0);
+        // theMemeImage = getIntent().getByteArrayExtra("IMAGE");
         TextView meme = (TextView) findViewById(R.id.transcribe);
         meme.setText(words);
         TextView webs = (TextView) findViewById(R.id.web);
         webs.setText(web);
         ImageView imag = (ImageView) findViewById(R.id.meme);
-        imag.setImageResource(this.theMemeImage);
+        // final Bitmap bmp = BitmapFactory.decodeByteArray(theMemeImage, 0, theMemeImage.length);
+        // imag.setImageBitmap(bmp);
         //get a reference to the button element listed in the XML layout
         System.out.println(words +" " + web +"HELLO");
         myTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
@@ -70,28 +53,13 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
                 }
             }
         });
-       // speakWords("hello there");
-/*
-        //check for TTS data
-        Intent checkTTSIntent = new Intent();
-        checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
-        startActivityForResult(checkTTSIntent, MY_DATA_CHECK_CODE);*/
-    }
-/*
-    //respond to button clicks
-    public void onClick(View v) {
 
-        //get the text entered
-        EditText enteredText = (EditText)findViewById(R.id.enter);
-        String words = enteredText.getText().toString();
-        speakWords(words);
     }
-*/
 
     //speak the user text
     private void speakWords(String speech) {
 
-        Log.d("speakWords", " "+speech);
+        Log.i(TAG, " " + speech);
         //speak straight away
         int success = 0;
 
@@ -119,11 +87,12 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
 
     //setup TTS
     public void onInit(int initStatus) {
-
         //check for successful instantiation
         if (initStatus == TextToSpeech.SUCCESS) {
-            if(myTTS.isLanguageAvailable(Locale.CANADA)==TextToSpeech.LANG_AVAILABLE)
-                myTTS.setLanguage(Locale.CANADA);
+            if (myTTS.isLanguageAvailable(Locale.US) == TextToSpeech.LANG_AVAILABLE)
+            {
+                myTTS.setLanguage(Locale.US);
+            }
         }
         else if (initStatus == TextToSpeech.ERROR) {
             Toast.makeText(this, "Sorry! Text To Speech failed...", Toast.LENGTH_LONG).show();
