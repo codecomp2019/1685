@@ -59,8 +59,19 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
         imag.setImageResource(this.theMemeImage);
         //get a reference to the button element listed in the XML layout
         System.out.println(words +" " + web +"HELLO");
-        /*speakWords("hello there");
-
+        myTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    // replace this Locale with whatever you want                    
+                    Locale localeToUse = new Locale("en","US");
+                    myTTS.setLanguage(localeToUse);
+                    myTTS.speak(words +" " + web, TextToSpeech.QUEUE_FLUSH, null);
+                }
+            }
+        });
+       // speakWords("hello there");
+/*
         //check for TTS data
         Intent checkTTSIntent = new Intent();
         checkTTSIntent.setAction(TextToSpeech.Engine.ACTION_CHECK_TTS_DATA);
@@ -85,7 +96,7 @@ public class SpeakingAndroid extends Activity implements  OnInitListener {
         int success = 0;
 
         //myTTS.speak(speech, TextToSpeech.QUEUE_FLUSH, null);
-        success = myTTS.speak(speech,0, null,"UK");
+        success = myTTS.speak(speech,0, null,null);
         //myTTS.shutdown();
     }
 

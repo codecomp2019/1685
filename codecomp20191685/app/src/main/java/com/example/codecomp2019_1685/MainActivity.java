@@ -3,6 +3,7 @@ package com.example.codecomp2019_1685;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.Settings;
+import android.speech.tts.TextToSpeech;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,11 +18,12 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     // Constants
     private static final String TAG = MainActivity.class.getName();
-
+    private TextToSpeech mTts;
     // Instances
     private GoogleAPIWrapper googleAPI = new GoogleAPIWrapper();
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         private Image inputImage;
         private String textDetect;
         private String webDetect;
+
 
         // Constructors
         private GoogleRunnable() { }
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         final Button overlayButton = (Button) findViewById(R.id.button);
         final Button ttsButton = (Button) findViewById(R.id.TTS);
         final Button camera;
+
         overlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)
